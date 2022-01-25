@@ -17,6 +17,11 @@
   },
   "homepage": "https://github.com/smvgggsdd/discord-bot-bob#readme",
   "dependencies": {
-    "discord.js": "^13.6.0"
+    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
+    "discord-api-types": "^0.26.1",
+    "discord.js": "^13.6.0",
+    "yt-search": "^2.10.3",
+    "ytdl-core": "^4.10.0"
   }
 }
