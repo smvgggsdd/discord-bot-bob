@@ -1,53 +1,57 @@
 const fs = require('fs');
-const { token } = require('./config.json');
+const { token, clientId, guildId } = require('./config.json');
 const { Client, Collection, Intents } = require('discord.js');
+const { Routes } = require('discord-api-types/v9');
+const { REST } = require('@discordjs/rest');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
 
-client.commands = new Collection();
+// client.commands = new Collection();
+// this might be the better way to do it
+const commands = [];
 
 // Search through subdirectories to find commands/ events
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
-
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     // Set a new item in the Collection
     // With the key as the command name and the alue as the exported module
-    client.commands.set(command.data.name, command);
+    // client.commands.set(command.data.name, command);
+
+    // this next way might be preferred
+    commands.push(command.data.toJSON());
 }
 
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args));
+        client.once(event.name, (...args) => event.execute(client, ...args));
     } else {
-        client.on(event.name, (...args) => event.execute(...args));
+        client.on(event.name, (...args) => event.execute(client, ...args));
     }
 }
 
+const rest = new REST({ version: '9'}).setToken(token);
 
-//might not need next block
-// client.once('ready', () => {
-//     console.log('Bobby is online');
-// });
+(async () => {
+    try {
 
-// or this
-// client.on('interactionCreate', async interaction => {
-//     if (!interaction.isCommand()) return;
+        console.log('Started refreshing application (/) commands.');
 
-//     const command = client.commands.get(interaction.commandName);
+        await rest.put(
+            Routes.applicationGuildCommands(clientId, guildId),
+            { body: commands },
+        );
 
-//     if (!command) return;
+        console.log('Successfully reloaded application (/) commands.');
+    } catch(error) {
+        console.log(error);
+    }
+    
+})();
 
-//     try {
-//         await command.execute(interaction);
-//     } catch (error) {
-//         console.error(error);
-//         await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true});
-//     }
-// });
 
 
 // This needs to be last line of file
