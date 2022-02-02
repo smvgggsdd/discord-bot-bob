@@ -6,9 +6,12 @@ const { REST } = require('@discordjs/rest');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
 
-// client.commands = new Collection();
-// this might be the better way to do it
+// This collection is for commands
+client.commands = new Collection();
+
+// This array is for registering slash commands on reload
 const commands = [];
+
 
 // Search through subdirectories to find commands/ events
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -18,18 +21,18 @@ for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     // Set a new item in the Collection
     // With the key as the command name and the alue as the exported module
-    // client.commands.set(command.data.name, command);
-
-    // this next way might be preferred
+    client.commands.set(command.data.name, command);
     commands.push(command.data.toJSON());
+
 }
 
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {
-        client.once(event.name, (...args) => event.execute(client, ...args));
+
+        client.once(event.name, (...args) => event.execute(...args));
     } else {
-        client.on(event.name, (...args) => event.execute(client, ...args));
+        client.on(event.name, (...args) => event.execute(...args));
     }
 }
 

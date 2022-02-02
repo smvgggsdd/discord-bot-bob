@@ -1,6 +1,7 @@
 module.exports = {
     name: 'interactionCreate',
-    async execute(client, interaction) {
+
+    async execute(interaction) {
         console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);
 
         if (!interaction.isCommand()) return;
@@ -8,7 +9,7 @@ module.exports = {
         // need to use interaction.client to access client instance in this file
 
         // const command = interaction.client.commands.get(interaction.commandName);
-        const command = interaction.commands.get(interaction.commandName);
+        const command = interaction.client.commands.get(interaction.commandName);
         
         
         if (!command) return;
