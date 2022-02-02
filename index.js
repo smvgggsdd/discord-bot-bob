@@ -3,6 +3,7 @@ const { token, clientId, guildId } = require('./config.json');
 const { Client, Collection, Intents } = require('discord.js');
 const { Routes } = require('discord-api-types/v9');
 const { REST } = require('@discordjs/rest');
+// const { fetch } = require("node-fetch")
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
 
@@ -54,8 +55,6 @@ const rest = new REST({ version: '9'}).setToken(token);
     }
     
 })();
-
-
 
 // This needs to be last line of file
 client.login(token);

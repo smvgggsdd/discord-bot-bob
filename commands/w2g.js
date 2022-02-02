@@ -1,3 +1,5 @@
+// import fetch from "node-fetch";
+const fetch = require("node-fetch");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { execute } = require('./ping');
 const { w2gKey } = require('../config.json');
@@ -22,8 +24,9 @@ module.exports = {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("w2G: Here is your room! \n https://w2g.tv/rooms/" + data.streamKey); 
+            console.log("w2G: Here is your room! \n https://w2g.tv/rooms/" + data.streamkey); 
+            interaction.reply("Bob's got ya a room: \n https://w2g.tv/rooms/" + data.streamkey);
         });
-        await interaction.reply('Hi');
+        // await interaction.reply(streamkey);
     },
 };
