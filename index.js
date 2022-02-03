@@ -7,6 +7,7 @@ const { REST } = require('@discordjs/rest');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
 
+
 // This collection is for commands
 client.commands = new Collection();
 

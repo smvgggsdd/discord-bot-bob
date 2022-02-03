@@ -3,11 +3,12 @@ const fetch = require("node-fetch");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { execute } = require('./ping');
 const { w2gKey } = require('../config.json');
+const { cache } = require('../cache/cache');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('w2g')
-        .setDescription('Fetches a private room'),
+        .setDescription('Fetches a new private room'),
     async execute(interaction) {
         fetch("https://w2g.tv/rooms/create.json", {
             method: 'POST',
@@ -26,7 +27,11 @@ module.exports = {
         .then(data => {
             console.log("w2G: Here is your room! \n https://w2g.tv/rooms/" + data.streamkey); 
             interaction.reply("Bob's got ya a room: \n https://w2g.tv/rooms/" + data.streamkey);
+            cache.myCache.set('w2gKey', data.streamkey);
+            
         });
-        // await interaction.reply(streamkey);
+        // TODO: Implement add video to playlist and play video now
+        // At some point you will need to create class to keep track of session
+        // A search by song name functionality would also make this more useful
     },
 };
